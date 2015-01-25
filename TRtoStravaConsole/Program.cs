@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -12,11 +13,20 @@ namespace TRtoStravaConsole
 	{
 		static void Main(string[] args)
 		{
-			WebClient wc = new WebClient();
+			HttpContent content = new StringContent("");
 
-			string page = wc.DownloadString(@"http://www.trainerroad.com/career/tylerwal");
+			Uri trainerRoadApi = new Uri("http://www.trainerroad.com/api/rides");
 
-			File.WriteAllText(@"C:\page.html", page);
+			Task<HttpResponseMessage> response;
+
+			using (HttpClient httpClient = new HttpClient())
+			{
+				response = httpClient.PostAsync(trainerRoadApi, content);
+			}
+
+			Console.WriteLine(response.Result.Content);
+
+			Console.ReadKey();
 
 			//Console.Write(page);
 
